@@ -12,13 +12,13 @@ async def removeRemark(url,num):
     mode[0] = mode[0].lower()
 
     if mode[0] in ['ss', 'trojan']:
-        return (f'{url.split("#")[0]}#KingVpn:{num}')
+        return (f'{url.split("#")[0]}#Lighthouse:{num}')
 
     elif mode[0] in ['vmess', 'vless']:
 
         decoded_data = base64.b64decode(mode[1])
         u = json.loads(decoded_data.decode('utf-8'))
-        u['ps'] = f'my_vpn{num}'
+        u['ps'] = f'Lighthouse:{num}'
         u = json.dumps(u, ensure_ascii=False)
         eb = base64.b64encode(u.encode('utf-8'))
         es = eb.decode('utf-8')
