@@ -1,0 +1,7 @@
+venv/*
+clashfile.txt
+config.json
+test.py
+xray.exe
+__pycache__/*
+
