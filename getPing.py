@@ -42,7 +42,7 @@ async def testPing(testUrl=['https://www.google.com/generate_204'], proxies=[], 
     for _ in testUrl:
         for proxy in proxies:
             ping_time = results[results_index]
-            testedList.append({'Proxy': proxy, 'Ping': ping_time})
+            testedList.append(ping_time)
             results_index += 1
     return testedList
 
