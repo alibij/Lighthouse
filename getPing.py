@@ -4,7 +4,7 @@ from aiohttp import ClientSession, ClientTimeout
 import time
 
 
-async def __get_real_ping_time(url: str, proxy: Optional[str] = None, download_timeout: int = 10) -> int:
+async def __get_real_ping_time(url: str, proxy: Optional[str] = None, download_timeout:int =  10) -> int:
     response_time = -1
     try:
         timeout = ClientTimeout(total=download_timeout)
@@ -22,7 +22,7 @@ async def __get_real_ping_time(url: str, proxy: Optional[str] = None, download_t
     return response_time
 
 
-async def __test_urls_with_proxies(urls: List[str], proxies: List[Optional[str]], download_timeout: int = 10):
+async def __test_urls_with_proxies(urls: List[str], proxies: List[Optional[str]], download_timeout):
     tasks = []
 
     for url in urls:
@@ -47,5 +47,3 @@ async def testPing(testUrl=['https://www.google.com/generate_204'], proxies=[], 
     return testedList
 
 
-if __name__ == '__main__':
-    asyncio.run(testPing())
