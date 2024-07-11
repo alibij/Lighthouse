@@ -32,17 +32,22 @@ async def main():
     task = start_core()
 
     proxies = [
-        f'http://127.0.0.1:{i}' for i in range(file['startPort'], file['lastPort']+1)]
+        f'http://localhost:{i}' for i in range(file['startPort'], file['lastPort']+1)]
 
     servers = await testPing(proxies=proxies)
-
     stop_task(task['pid'])
+    sortedServer = []
     clashFile = ''
     for i, server in enumerate(servers):
         if server['Ping'] > 0:
-            clashFile += str(await removeRemark(file['serverList'][i],i))
+            removedname = str(await removeRemark(file['serverList'][i],i))
+            sortedServer.append({'Ping':server['Ping'],'Url':removedname})
+            clashFile += removedname
             clashFile += '\n'
 
+    sortedServer = sorted(sortedServer,key=lambda x: x['Ping'])
+    for i in sortedServer:
+        print(i)
     encoded_bytes = base64.b64encode(clashFile.encode('utf-8'))
     encoded_string = encoded_bytes.decode('utf-8')
 
