@@ -2,6 +2,7 @@ venv/*
 clashfile.txt
 config.json
 test.py
+serverlist.txt
 xray.exe
 __pycache__/*
 
