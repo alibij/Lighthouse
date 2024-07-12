@@ -88,9 +88,13 @@ async def main(test_limit, speedtelorance):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--limit','-L', type=int, default=10,
-                        help='Limit value for processing')
+    parser.add_argument('--speedtolerance', '-st', type=int, default=10,
+                        help='Acceptable limit for speed %')
+
+    parser.add_argument('--limit', '-L', type=int, default=10,
+                        help='Limit server for testing default is 10 / no-limit=-1')
 
     args = parser.parse_args()
+    spt = (100-args.speedtolerance)/100
 
-    asyncio.run(main(args.limit))
+    asyncio.run(main(args.limit, spt))
