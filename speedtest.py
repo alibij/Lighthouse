@@ -76,12 +76,12 @@ async def speedTest(testUrl='https://speed.cloudflare.com/__down?bytes=1000000',
                     download_time = endTime - startTime
                     speed = (data / download_time) / (1024 * 1024)
                 else:
-                    print(
-                        f"Failed to download from {proxy}. Status code: {response.status}")
+                    # print(f"Failed to download from {proxy}. Status code: {response.status}")
+                    pass
     except Exception as e:
         # print(f"Exception occurred for {url} with proxy {proxy}: {e}")
         pass
-    return "{:.2f}".format(speed)
+    return float("{:.2f}".format(speed))
 
     return speedTest
 
