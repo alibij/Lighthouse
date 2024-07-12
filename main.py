@@ -86,7 +86,7 @@ async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--speedtolerance', '-st', type=int, default=10,
-                        help='Acceptable limit for speed %')
+                        help='Acceptable limit for speed')
 
     parser.add_argument('--limit', '-l', type=int, default=10,
                         help='Limit server for testing default is 10 / no-limit=-1')
@@ -94,10 +94,10 @@ if __name__ == "__main__":
     parser.add_argument('--makefile', '-f', action='store_true',
                         help='Create a file from the list of active servers default=False')
 
-    parser.add_argument('--httpport', type=int, default=1081, choices=range(0, 65535),
+    parser.add_argument('--httpport', type=int, default=1081,
                         help='http port default=1081')
 
-    parser.add_argument('--socksport', type=int, default=1080, choices=range(0, 65535),
+    parser.add_argument('--socksport', type=int, default=1080,
                         help='http port default=1080')
 
     # parser.add_argument('--disablehttp', '-DH', action='store_true',
