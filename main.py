@@ -72,28 +72,39 @@ async def main(test_limit, speedtelorance):
         print_loading_bar(i+1, 0,serverlen)
 
     stop_task(task['pid'])
-    activeServer = sorted(
-        activeServer, key=lambda x: x['downloadSpeed'], reverse=True)
-    for i in activeServer:
-        clashFile += f'{i["connectionUrl"]}\n'
-        serverfile += f'{i}\n'
-
-    encoded_bytes = base64.b64encode(clashFile.encode('utf-8'))
-    encoded_string = encoded_bytes.decode('utf-8')
-
-    make_file(serverfile, "./serverlist.txt")
-    make_file(encoded_string, "./clashfile.txt")
-
+        createServerFile.server_list_file(activeServer)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--speedtolerance', '-st', type=int, default=10,
                         help='Acceptable limit for speed %')
 
-    parser.add_argument('--limit', '-L', type=int, default=10,
+    parser.add_argument('--limit', '-l', type=int, default=10,
                         help='Limit server for testing default is 10 / no-limit=-1')
 
+    parser.add_argument('--makefile', '-f', action='store_true',
+                        help='Create a file from the list of active servers default=False')
+
+    parser.add_argument('--httpport', type=int, default=1081, choices=range(0, 65535),
+                        help='http port default=1081')
+
+    parser.add_argument('--socksport', type=int, default=1080, choices=range(0, 65535),
+                        help='http port default=1080')
+
+    # parser.add_argument('--disablehttp', '-DH', action='store_true',
+    #                     help='Create a file from the list of active servers default=False')
+
+    parser.add_argument('--disablesocks', '-DS', action='store_true',
+                        help='Create a file from the list of active servers default=False')
+
     args = parser.parse_args()
+    xray_setting = {
+        # 'http': not args.disablehttp,
+        'socks': not args.disablesocks,
+        'http_port': args.httpport,
+        'socks_port': args.socksport
+    }
     spt = (100-args.speedtolerance)/100
 
-    asyncio.run(main(args.limit, spt))
+    asyncio.run(main(test_limit=args.limit, speedtelorance=spt,
+                     create_file=args.makefile, xray_config=xray_setting))
