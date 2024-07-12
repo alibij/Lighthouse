@@ -2,6 +2,7 @@ import json
 import requests
 import base64
 from url2json import generateConfig
+from common import make_file
 
 
 def fetch_and_decode_data(url="https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/Eternity"):
@@ -17,7 +18,7 @@ def fetch_and_decode_data(url="https://raw.githubusercontent.com/mahdibland/Shad
         print(f"Error fetching data from {url}: {e}")
 
 
-def create_config(server_list: list, fileName='config.json', startPort=10000):
+def create_config(server_list: list, fileName='testconfig.json', startPort=10000):
     startport = startPort
     default_json = {
         "log": {
@@ -74,8 +75,9 @@ def create_config(server_list: list, fileName='config.json', startPort=10000):
             serverList.append(url)
             startport += 1
 
-    with open(fileName, 'w') as json_file:
-        json.dump(default_json, json_file, indent=4)
+    make_file(json.dumps(default_json, indent=4), fileName)
+    # with open(fileName, 'w') as json_file:
+    #     json.dump(default_json, json_file, indent=4)
 
     return {
         'startPort': startPort,
@@ -85,6 +87,102 @@ def create_config(server_list: list, fileName='config.json', startPort=10000):
     }
 
 
-if __name__ == '__main__':
-    server_list = fetch_and_decode_data()
-    print(create_config(server_list))
+def main_config(server: str, fileName='config.json', http_port=1081, socks5_port=1080,addrules=True):
+
+    rules = [
+        {
+            "type": "field",
+            "inboundTag": [
+                "api"
+            ],
+            "outboundTag": "api"
+        },
+        {
+            "type": "field",
+            "outboundTag": "direct",
+            "domain": [
+                "domain:example-example.com",
+                "domain:example-example2.com"
+            ]
+        },
+        {
+            "type": "field",
+            "outboundTag": "block",
+            "domain": [
+                "geosite:category-ads-all"
+            ]
+        },
+        {
+            "type": "field",
+            "outboundTag": "direct",
+            "domain": [
+                "geosite:cn",
+                "geosite:geolocation-cn"
+            ]
+        },
+        {
+            "type": "field",
+            "outboundTag": "direct",
+            "ip": [
+                "geoip:private",
+                "geoip:cn"
+            ]
+        },
+        {
+            "type": "field",
+            "port": "0-65535",
+            "outboundTag": "proxy"
+        }
+    ]
+    default_json = {
+        "log": {},
+        "api": {
+            "tag": "api",
+            "services": ["HandlerService", "LoggerService", "StatsService"]
+        },
+        "inbounds": [
+            {
+                "port": socks5_port,
+                "protocol": "socks",
+                "settings": {
+                    "auth": "noauth",
+                    "udp": True
+                }
+            },
+            {
+                "port": http_port,
+                "protocol": "http",
+                "settings": {}
+            }
+        ],
+        "outbounds": [
+            {
+                "tag": "direct",
+                "protocol": "freedom",
+                "settings": {}
+            },
+            {
+                "tag": "blocked",
+                "protocol": "blackhole",
+                "settings": {}
+            }
+        ],
+        "routing": {
+            "domainStrategy": "AsIs",
+            "rules": rules if addrules else []
+        }
+    }
+
+    proxy = generateConfig(server)
+
+    if proxy:
+        outbound = proxy['outbounds'][0]
+        default_json['outbounds'].append(outbound)
+
+        make_file(json.dumps(default_json, indent=4), fileName)
+
+        return True
+    return False
+
+
+if __name__ == "__main__": pass
