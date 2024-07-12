@@ -87,7 +87,7 @@ def create_config(server_list: list, fileName='testconfig.json', startPort=10000
     }
 
 
-def main_config(server: str, fileName='config.json', http_port=1081, socks5_port=1080,addrules=True):
+def main_config(server: str, fileName='config.json', http_port=1081, socks5_port=1080, addrules=True, http=True, socks=True):
 
     rules = [
         {
@@ -140,21 +140,7 @@ def main_config(server: str, fileName='config.json', http_port=1081, socks5_port
             "tag": "api",
             "services": ["HandlerService", "LoggerService", "StatsService"]
         },
-        "inbounds": [
-            {
-                "port": socks5_port,
-                "protocol": "socks",
-                "settings": {
-                    "auth": "noauth",
-                    "udp": True
-                }
-            },
-            {
-                "port": http_port,
-                "protocol": "http",
-                "settings": {}
-            }
-        ],
+        "inbounds": [],
         "outbounds": [
             {
                 "tag": "direct",
@@ -174,7 +160,21 @@ def main_config(server: str, fileName='config.json', http_port=1081, socks5_port
     }
 
     proxy = generateConfig(server)
-
+    if socks:
+        default_json['inbounds'].append({
+            "port": socks5_port,
+            "protocol": "socks",
+            "settings": {
+                "auth": "noauth",
+                "udp": True
+            }
+        })
+    if http:
+        default_json['inbounds'].append({
+            "port": http_port,
+            "protocol": "http",
+            "settings": {}
+        })
     if proxy:
         outbound = proxy['outbounds'][0]
         default_json['outbounds'].append(outbound)
@@ -185,4 +185,5 @@ def main_config(server: str, fileName='config.json', http_port=1081, socks5_port
     return False
 
 
-if __name__ == "__main__": pass
+if __name__ == "__main__":
+    pass
