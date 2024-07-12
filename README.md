@@ -12,3 +12,7 @@ This Python project is designed for testing VPN services using Xray, a versatile
 - **Security Evaluation**: Assess DNS leakage, IP address concealment, and traffic encryption strength for each supported protocol.
 - **Automation**: Automate tests for scalability and repeatability using Python scripts.
 - **Report Generation**: Generate detailed reports with test results and recommendations.
+
+For the latest version of Xray, visit [Xray Releases](https://github.com/XTLS/Xray-core/releases).
+
+For the latest version of geo files, visit [GeoIP Releases](https://github.com/v2fly/geoip/releases).
