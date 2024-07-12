@@ -1,3 +1,4 @@
+import createServerFile
 import argparse
 import os
 from speedtest import speedTest
@@ -9,14 +10,24 @@ from managertask import start_core, stop_task, find_xray_pid
 from getPing import testPing
 
 
-def connect_to_fastest(url):
+async def connect_to_fastest(url, config):
+
     if pid := find_xray_pid():
         stop_task(pid)
-    if main_config(url):
+
+    if main_config(url, http_port=config['http_port'],
+                   socks5_port=config['socks_port'],
+                   socks=config['socks']):
         start_core(config_file_path='./config.json')
 
+        ip_data = await get_ip_data(proxy=f'http://localhost:{config["http_port"]}')
+        
+        clear()
 
-async def main(test_limit, speedtelorance):
+        print(f'\nConnected to {ip_data["country"]} Server \nNow your IP is : {ip_data["ip"]}\n')
+
+
+async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file=False):
     clear()
     print('Getting the latest servers')
     file = create_config(fetch_and_decode_data())
