@@ -45,8 +45,6 @@ async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file
                          'connectionUrl': await removeRemark(file['serverList'][i], i),
                          'ping': ping, 'downloadSpeed': 0}
 
-    clashFile = ''
-    serverfile = ''
     activeServer = []
     for i in proxies:
         if proxies[i]['ping'] > 0:
@@ -56,12 +54,9 @@ async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file
     highestserver = {}
     speed = 0.00
     netspeed = await speedTest()
-
     for i, server in enumerate(activeServer):
 
         if i == test_limit or speed >= (netspeed*speedtelorance):
-
-            connect_to_fastest(highestserver['connectionUrl'])
             break
 
         activeServer[i]['downloadSpeed'] = await speedTest(proxy=server['proxyUrl'])
@@ -80,9 +75,12 @@ async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file
         serverlen = test_limit if (test_limit > 0 and test_limit <= len(
             activeServer)) else len(activeServer)
 
-        print_loading_bar(i+1, 0,serverlen)
+        print_loading_bar(i+1, 0, serverlen)
 
     stop_task(task['pid'])
+
+    await connect_to_fastest(highestserver['connectionUrl'], xray_config)
+    if create_file:
         createServerFile.server_list_file(activeServer)
 
 if __name__ == "__main__":
