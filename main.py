@@ -11,7 +11,6 @@ from getPing import testPing
 
 def connect_to_fastest(url):
     if pid := find_xray_pid():
-        print(pid)
         stop_task(pid)
     if main_config(url):
         start_core(config_file_path='./config.json')
