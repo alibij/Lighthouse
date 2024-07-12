@@ -1,3 +1,5 @@
+from aiohttp import ClientSession, ClientTimeout
+import asyncio
 import time
 import sys
 import os
@@ -33,11 +35,58 @@ def make_file(data: any, file_name: str, mode='w', encoding='utf-8'):
         f.write(data)
 
 
-
 def print_loading_bar(current, min_val, max_val, length=80):
     progress = (current - min_val) / (max_val - min_val)
     percent = int(progress * 100)
     bar_length = int(length * progress)
-    bar = '[' + '|' * bar_length + ' ' * (length - bar_length) + '] ' + f'{percent} %'
+    bar = '[' + '|' * bar_length + ' ' * \
+        (length - bar_length) + '] ' + f'{percent} %'
     sys.stdout.write('\r' + bar)
     sys.stdout.flush()
+
+async def get_ip(proxy=None, time_out=10):
+    testUrl = 'https://api64.ipify.org?format=json'
+    try:
+        timeout = ClientTimeout(total=time_out)
+
+        async with ClientSession(timeout=timeout) as session:
+            async with session.get(testUrl, proxy=proxy) as response:
+                if response.status == 200:
+                    data=await response.json()
+                    ip = data['ip']
+                    return ip
+                else:
+                    return None
+    except Exception as e:
+        pass
+
+async def get_ip_data(proxy=None, time_out=10):
+
+    timeout = ClientTimeout(total=time_out)
+    testUrl = 'https://ifconfig.co/json'
+    try:
+
+        async with ClientSession(timeout=timeout) as session:
+            async with session.get(testUrl, proxy=proxy) as response:
+                if response.status == 200:
+                    return await response.json()
+    except Exception as e:
+        pass
+
+    ip=await get_ip(proxy)
+    testUrl = f'https://ipinfo.io/{ip}/json'
+    try:
+
+        async with ClientSession(timeout=timeout) as session:
+            async with session.get(testUrl, proxy=proxy) as response:
+                if response.status == 200:
+                    return await response.json()
+                else:
+                    return None
+    except Exception as e:
+        pass
+
+if __name__ == "__main__":
+    asyncio.run(get_ip_data())
+    
+
