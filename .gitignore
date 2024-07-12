@@ -6,6 +6,4 @@ serverlist.txt
 xray.exe
 __pycache__/*
 
-geoip.dat
-private.dat
 testconfig.json
