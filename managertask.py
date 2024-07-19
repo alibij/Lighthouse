@@ -50,9 +50,8 @@ def stop_task(pid):
         return False
 
 
-
 def find_xray_pid():
-    
+
     procname = 'xray.exe' if platform.system() == 'Windows' else 'xray'
     for proc in psutil.process_iter(['pid', 'name']):
         try:
@@ -62,3 +61,6 @@ def find_xray_pid():
             pass
     return None
 
+
+def chek_task(pid: int):
+    return psutil.pid_exists(pid)
