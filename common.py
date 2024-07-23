@@ -44,6 +44,7 @@ def print_loading_bar(current, min_val, max_val, length=80):
     sys.stdout.write('\r' + bar)
     sys.stdout.flush()
 
+
 async def get_ip(proxy=None, time_out=10):
     testUrl = 'https://api64.ipify.org?format=json'
     try:
@@ -52,13 +53,14 @@ async def get_ip(proxy=None, time_out=10):
         async with ClientSession(timeout=timeout) as session:
             async with session.get(testUrl, proxy=proxy) as response:
                 if response.status == 200:
-                    data=await response.json()
+                    data = await response.json()
                     ip = data['ip']
                     return ip
                 else:
                     return None
     except Exception as e:
         pass
+
 
 async def get_ip_data(proxy=None, time_out=10):
 
@@ -73,10 +75,9 @@ async def get_ip_data(proxy=None, time_out=10):
     except Exception as e:
         pass
 
-    ip=await get_ip(proxy)
+    ip = await get_ip(proxy)
     testUrl = f'https://ipinfo.io/{ip}/json'
     try:
-
         async with ClientSession(timeout=timeout) as session:
             async with session.get(testUrl, proxy=proxy) as response:
                 if response.status == 200:
@@ -88,5 +89,3 @@ async def get_ip_data(proxy=None, time_out=10):
 
 if __name__ == "__main__":
     asyncio.run(get_ip_data())
-    
-
