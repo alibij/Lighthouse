@@ -5,11 +5,12 @@ from url2json import generateConfig
 from common import make_file
 
 
-def fetch_and_decode_data(url="https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/Eternity"):
+def fetch_and_decode_data(url="https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/Eternity", is_base64=True):
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            decoded_data = base64.b64decode(response.content)
+            decoded_data = base64.b64decode(
+                response.content) if is_base64 else response.content
             return decoded_data.decode('utf-8').strip().split('\n')
         else:
             print(
@@ -48,7 +49,10 @@ def create_config(server_list: list, fileName='testconfig.json', startPort=10000
     }
     serverList = []
     for url in server_list:
-        proxy = generateConfig(url)
+        try:
+            proxy = generateConfig(url)
+        except:
+            continue
 
         if proxy:
 

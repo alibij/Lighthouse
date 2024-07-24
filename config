@@ -1,0 +1,12 @@
+{
+    "last_xray_pid": 74374,
+    "test_limit": 15,
+    "speed_tolerance": 0.9,
+    "create_file": false,
+    "xray_config": {
+        "http": true,
+        "socks": true,
+        "http_port": 1081,
+        "socks_port": 1080
+    }
+}

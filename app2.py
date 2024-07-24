@@ -34,7 +34,8 @@ def connection_button():
 def on_connect():
 
     conf = config.read()
-    asyncio.run(make_connection(test_limit=conf.test_limit, speed_tolerance=conf.speed_tolerance,
+    asyncio.run(make_connection(
+        test_limit=conf.test_limit, speed_tolerance=conf.speed_tolerance,
                 create_file=conf.create_file, xray_config=conf.xray_config.dict()))
 
 
