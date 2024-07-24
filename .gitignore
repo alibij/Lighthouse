@@ -7,3 +7,12 @@ xray.exe
 __pycache__/*
 
 testconfig.json
+xray
+build
+dist
+
+LightHouse.spec
+config
+icon/vpn-01.ico
+icon/vpn-02.ico
+icon/vpn-03.ico
