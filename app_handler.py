@@ -1,17 +1,16 @@
 import sys
 import asyncio
-from PyQt5.QtCore import QThread, pyqtSignal, QObject, pyqtSlot
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QProgressBar, QWidget
+from PyQt5.QtGui import QFontMetrics
+
 
 # Placeholder imports
 from config import ConfigManager, ConfigData
-from managertask import start_core, stop_task, chek_task
-from createConfig import fetch_and_decode_data, create_config, main_config
-from speedtest import speedTest
-from getPing import testPing
-import createServerFile
+from managertask import stop_task, chek_task
 from common import *
-from xray_tester import XrayTesterWorker, Signals
+from xray_tester import XrayTesterWorker
+from app_lookup import AppLookUpWorker
 
 config = ConfigManager(filename='./config', encode=False)
 
@@ -49,7 +48,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.xray_tester_worker = XrayTesterWorker()
         self.app_look_up_worker = AppLookUpWorker()
-
+        self._config = config.read()
         self.init_ui()
 
     def init_ui(self):
@@ -57,6 +56,8 @@ class MainWindow(QMainWindow):
         self.setFixedSize(300, 400)
 
         self.label = QLabel("Waiting for ...")
+        self.label.setWordWrap(True)
+        self.label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
         self.progress_bar = QProgressBar()
 
@@ -94,6 +95,8 @@ class MainWindow(QMainWindow):
         if not self.app_look_up_worker.isRunning():
             self.app_look_up_worker.connect_btn_signal.connect(
                 self.update_connect_btn)
+            self.app_look_up_worker.update_lable_signal.connect(
+                self.update_label)
             self.app_look_up_worker.start()
 
     def handle_connect(self):
