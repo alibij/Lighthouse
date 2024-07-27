@@ -33,8 +33,7 @@ class XrayTesterWorker(QThread):
             ip_data = await get_ip_data(proxy=f'http://localhost:{config["http_port"]}')
             if ip_data:
                 self.signals.label_signal.emit(
-                    f'\nConnected to {ip_data["country"]} Server \
-                    \nNow your IP is: {ip_data["ip"]}\n')
+                    f'\nConnected to {ip_data["country"]}\n\nNow your IP is :\n  {ip_data["ip"]}\n')
             else:
                 self.signals.label_signal.emit(
                     "Connected\nCan't get ip"
