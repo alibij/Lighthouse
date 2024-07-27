@@ -15,34 +15,6 @@ from app_lookup import AppLookUpWorker
 config = ConfigManager(filename='./config', encode=False)
 
 
-class AppLookUpWorker(QThread):
-    connect_btn_signal = pyqtSignal(str)
-
-    def __init__(self):
-        super().__init__()
-        self._stop_event = asyncio.Event()
-
-    def run(self):
-        asyncio.run(self.async_run())
-
-    async def async_run(self):
-        while True:
-            self._config = config.read()
-            if self._config.last_xray_pid > 0 and \
-                    chek_task(self._config.last_xray_pid):
-                self.connect_btn_signal.emit('Disconnect')
-            else:
-                self.connect_btn_signal.emit('Connect')
-            await asyncio.sleep(1)
-
-    def disconnect_vpn(self):
-        config.write(ConfigData(last_xray_pid=0))
-        stop_task(self._config.last_xray_pid)
-
-    def stop_worker(self):
-        self._stop_event.set()
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
