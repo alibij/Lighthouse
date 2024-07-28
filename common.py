@@ -46,18 +46,13 @@ def print_loading_bar(current, min_val, max_val, length=80):
 
 
 async def get_ip(proxy=None, time_out=10):
-    testUrl = 'https://api64.ipify.org?format=json'
     try:
         timeout = ClientTimeout(total=time_out)
-
+        testUrl = 'http://icanhazip.com/'
         async with ClientSession(timeout=timeout) as session:
             async with session.get(testUrl, proxy=proxy) as response:
                 if response.status == 200:
-                    data = await response.json()
-                    ip = data['ip']
-                    return ip
-                else:
-                    return None
+                    return await response.text()
     except Exception as e:
         pass
 
@@ -65,6 +60,7 @@ async def get_ip(proxy=None, time_out=10):
 async def get_ip_data(proxy=None, time_out=10):
 
     timeout = ClientTimeout(total=time_out)
+
     testUrl = 'https://ifconfig.co/json'
     try:
 
@@ -76,6 +72,20 @@ async def get_ip_data(proxy=None, time_out=10):
         pass
 
     ip = await get_ip(proxy)
+
+    testUrl = f'http://ip-api.com/json/{ip}'
+    try:
+        async with ClientSession(timeout=timeout) as session:
+            async with session.get(testUrl) as response:
+                if response.status == 200:
+                    data = (await response.json())
+                    data['ip'] = ip
+                    return data
+                else:
+                    return None
+    except Exception as e:
+        pass
+
     testUrl = f'https://ipinfo.io/{ip}/json'
     try:
         async with ClientSession(timeout=timeout) as session:
@@ -86,6 +96,7 @@ async def get_ip_data(proxy=None, time_out=10):
                     return None
     except Exception as e:
         pass
+
 
 if __name__ == "__main__":
     asyncio.run(get_ip_data())
