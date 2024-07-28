@@ -36,7 +36,7 @@ class AppLookUpWorker(QThread):
 
                 if __ip_data and not self._config.test_is_run:
                     self.update_lable_signal.emit(
-                        f'\nConnected to {__ip_data["country"]}\n\nNow your IP is :\n\t {__ip_data["ip"]}\n')
+                        f'\nConnected\n{__ip_data["country"]}\n\nYour IP\n{__ip_data["ip"]}\n')
 
             else:
                 self.connect_btn_signal.emit('Connect')

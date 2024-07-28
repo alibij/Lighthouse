@@ -30,14 +30,6 @@ class XrayTesterWorker(QThread):
     async def connect_to_fastest(self, url, config):
         if main_config(url, http_port=config['http_port'], socks5_port=config['socks_port'], socks=config['socks']):
             self._task = start_core(config_file_path='./config.json')
-            ip_data = await get_ip_data(proxy=f'http://localhost:{config["http_port"]}')
-            if ip_data:
-                self.signals.label_signal.emit(
-                    f'\nConnected to {ip_data["country"]}\n\nNow your IP is :\n  {ip_data["ip"]}\n')
-            else:
-                self.signals.label_signal.emit(
-                    "Connected\nCan't get ip"
-                )
             return self._task
 
     async def async_run(self, xray_config, test_limit, speed_tolerance, create_file):
