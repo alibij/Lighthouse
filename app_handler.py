@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
+        config.write(ConfigData(test_is_run=False))
         self.setWindowTitle('LightHouse VPN')
         self.setFixedSize(300, 400)
 

@@ -89,7 +89,7 @@ async def get_ip_data(proxy=None, time_out=10):
     testUrl = f'https://ipinfo.io/{ip}/json'
     try:
         async with ClientSession(timeout=timeout) as session:
-            async with session.get(testUrl, proxy=proxy) as response:
+            async with session.get(testUrl) as response:
                 if response.status == 200:
                     return await response.json()
                 else:

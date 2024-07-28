@@ -70,7 +70,7 @@ class XrayTesterWorker(QThread):
 
         activeServer = [proxies[i] for i in proxies if proxies[i]['ping'] > 0]
         activeServer.sort(key=lambda x: x['ping'])
-        print(len(servers), len(activeServer))
+
         highest_server = {}
         speed = 0.00
         net_speed = await speedTest()
@@ -109,8 +109,10 @@ class XrayTesterWorker(QThread):
         config.write(ConfigData(last_xray_pid=t['pid']))
         if create_file:
             createServerFile.server_list_file(activeServer)
+        config.write(ConfigData(test_is_run=False))
 
     def run(self):
+        config.write(ConfigData(test_is_run=True))
         asyncio.run(self.async_run(
             xray_config=config.read().xray_config.dict(),
             test_limit=config.read().test_limit,
@@ -118,4 +120,5 @@ class XrayTesterWorker(QThread):
             create_file=config.read().create_file))
 
     def stop_worker(self):
+        config.write(ConfigData(test_is_run=False))
         self._stop_event.set()

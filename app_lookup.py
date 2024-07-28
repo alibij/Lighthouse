@@ -31,14 +31,16 @@ class AppLookUpWorker(QThread):
         while True:
             self._config = config.read()
             if self._config.last_xray_pid > 0 and \
-                    chek_task(self._config.last_xray_pid):
+                    chek_task(self._config.last_xray_pid) or self._config.test_is_run:
                 self.connect_btn_signal.emit('Disconnect')
 
-                if __ip_data:
+                if __ip_data and not self._config.test_is_run:
                     self.update_lable_signal.emit(
                         f'\nConnected to {__ip_data["country"]}\n\nNow your IP is :\n\t {__ip_data["ip"]}\n')
+
             else:
                 self.connect_btn_signal.emit('Connect')
+                self.update_lable_signal.emit('LightHouse is ready to use')
             await asyncio.sleep(1)
 
     def disconnect_vpn(self):
