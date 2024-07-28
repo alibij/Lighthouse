@@ -17,19 +17,22 @@ class AppLookUpWorker(QThread):
     def __init__(self):
         super().__init__()
         self._stop_event = asyncio.Event()
+        self.update_ip_flag = True
 
     def run(self):
         asyncio.run(self.async_run())
 
     async def async_run(self):
-        self._config = config.read()
-        __is_connect = True if self._config.last_xray_pid > 0 and \
-            chek_task(self._config.last_xray_pid) else False
-        __ip_data = await get_ip_data(
-            proxy=f'http://localhost:{self._config.xray_config.http_port}' if __is_connect else None)
 
         while True:
             self._config = config.read()
+            if self.update_ip_flag:
+                self.update_ip_flag = False
+                __is_connect = True if self._config.last_xray_pid > 0 and \
+                    chek_task(self._config.last_xray_pid) else False
+                __ip_data = await get_ip_data(
+                    proxy=f'http://localhost:{self._config.xray_config.http_port}' if __is_connect else None)
+
             if self._config.last_xray_pid > 0 and \
                     chek_task(self._config.last_xray_pid) or self._config.test_is_run:
                 self.connect_btn_signal.emit('Disconnect')
@@ -49,3 +52,6 @@ class AppLookUpWorker(QThread):
 
     def stop_worker(self):
         self._stop_event.set()
+
+    def update_ip(self):
+        self.update_ip_flag = True

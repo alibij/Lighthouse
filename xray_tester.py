@@ -19,6 +19,7 @@ config = ConfigManager(filename='./config', encode=False)
 class Signals(QObject):
     label_signal = pyqtSignal(str)
     progress_signal = pyqtSignal(int)
+    update_ip_signal = pyqtSignal()
 
 
 class XrayTesterWorker(QThread):
@@ -30,6 +31,7 @@ class XrayTesterWorker(QThread):
     async def connect_to_fastest(self, url, config):
         if main_config(url, http_port=config['http_port'], socks5_port=config['socks_port'], socks=config['socks']):
             self._task = start_core(config_file_path='./config.json')
+            self.signals.update_ip_signal.emit()
             return self._task
 
     async def async_run(self, xray_config, test_limit, speed_tolerance, create_file):

@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('LightHouse VPN')
         self.setFixedSize(300, 400)
 
-        self.label = QLabel("Waiting for ...")
+        self.label = QLabel("Waiting")
         self.label.setWordWrap(True)
         self.label.setAlignment(Qt.AlignLeft | Qt.AlignCenter)
 
@@ -86,6 +86,8 @@ class MainWindow(QMainWindow):
                 self.update_label)
             self.xray_tester_worker.signals.progress_signal.connect(
                 self.update_progress)
+            self.xray_tester_worker.signals.update_ip_signal.connect(
+                self.app_look_up_worker.update_ip)
             self.xray_tester_worker.start()
 
     def disconnect_vpn(self):
