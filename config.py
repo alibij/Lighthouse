@@ -14,7 +14,6 @@ class XrayBaseSetting(BaseModel):
 
 class ConfigData(BaseModel):
     last_xray_pid: Optional[int] = None
-    test_is_run: Optional[bool] = None
     test_limit: Optional[int] = None
     speed_tolerance: Optional[float] = None
     create_file: Optional[bool] = None
@@ -30,7 +29,6 @@ class ConfigManager:
         if not os.path.exists(self.filename):
             return ConfigData(
                 last_xray_pid=0,
-                test_is_run=False,
                 test_limit=10,
                 speed_tolerance=0.9,
                 create_file=False,

@@ -20,6 +20,7 @@ class Signals(QObject):
     label_signal = pyqtSignal(str)
     progress_signal = pyqtSignal(int)
     update_ip_signal = pyqtSignal()
+    test_is_runing = pyqtSignal(bool)
 
 
 class XrayTesterWorker(QThread):
@@ -103,10 +104,10 @@ class XrayTesterWorker(QThread):
         config.write(ConfigData(last_xray_pid=t['pid']))
         if create_file:
             createServerFile.server_list_file(activeServer)
-        config.write(ConfigData(test_is_run=False))
+        self.signals.test_is_runing.emit(False)
 
     def run(self):
-        config.write(ConfigData(test_is_run=True))
+        self.signals.test_is_runing.emit(True)
         asyncio.run(self.async_run(
             xray_config=config.read().xray_config.dict(),
             test_limit=config.read().test_limit,
@@ -114,5 +115,5 @@ class XrayTesterWorker(QThread):
             create_file=config.read().create_file))
 
     def stop_worker(self):
-        config.write(ConfigData(test_is_run=False))
+        self.signals.test_is_runing.emit(False)
         self._stop_event.set()

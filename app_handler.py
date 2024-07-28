@@ -24,7 +24,6 @@ class MainWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        config.write(ConfigData(test_is_run=False))
         self.setWindowTitle('LightHouse VPN')
         self.setFixedSize(300, 400)
 
@@ -88,6 +87,8 @@ class MainWindow(QMainWindow):
                 self.update_progress)
             self.xray_tester_worker.signals.update_ip_signal.connect(
                 self.app_look_up_worker.update_ip)
+            self.xray_tester_worker.signals.test_is_runing.connect(
+                self.app_look_up_worker.runing_test)
             self.xray_tester_worker.start()
 
     def disconnect_vpn(self):
