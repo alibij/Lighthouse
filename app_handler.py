@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
 
         self.label = QLabel("Waiting for ...")
         self.label.setWordWrap(True)
-        self.label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.label.setAlignment(Qt.AlignLeft | Qt.AlignCenter)
 
         self.progress_bar = QProgressBar()
 
