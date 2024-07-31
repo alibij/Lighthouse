@@ -39,8 +39,10 @@ class AppLookUpWorker(QThread):
                 self.connect_btn_signal.emit('Disconnect')
 
                 if __ip_data and not self.test_is_run:
+                    country = __ip_data["country"] if "country" in __ip_data else "Country Not Find"
+
                     self.update_lable_signal.emit(
-                        f'\nConnected\n{__ip_data["country"]}\n\nYour IP\n{__ip_data["ip"]}\n')
+                        f'\nConnected\n{country}\n\nYour IP\n{__ip_data["ip"]}\n')
 
             else:
                 self.connect_btn_signal.emit('Connect')
