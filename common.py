@@ -61,16 +61,6 @@ async def get_ip_data(proxy=None, time_out=10):
 
     timeout = ClientTimeout(total=time_out)
 
-    testUrl = 'https://ifconfig.co/json'
-    try:
-
-        async with ClientSession(timeout=timeout) as session:
-            async with session.get(testUrl, proxy=proxy) as response:
-                if response.status == 200:
-                    return await response.json()
-    except Exception as e:
-        pass
-
     ip = await get_ip(proxy)
 
     testUrl = f'http://ip-api.com/json/{ip}'
@@ -97,6 +87,15 @@ async def get_ip_data(proxy=None, time_out=10):
     except Exception as e:
         pass
 
+    testUrl = 'https://ifconfig.co/json'
+    try:
+
+        async with ClientSession(timeout=timeout) as session:
+            async with session.get(testUrl, proxy=proxy) as response:
+                if response.status == 200:
+                    return await response.json()
+    except Exception as e:
+        pass
 
 if __name__ == "__main__":
     asyncio.run(get_ip_data())
