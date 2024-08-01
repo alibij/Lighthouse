@@ -4,15 +4,24 @@ import platform
 import time
 
 
+import platform
+import subprocess
+import time
+
+
 def start_core(xray_path='./xray', config_file_path='./config.json'):
     system = platform.system()
+    creationflags = 0
+    # creationflags = subprocess.CREATE_NO_WINDOW
+
     if system == 'Windows':
         xray_path = xray_path + '.exe'
+        creationflags = subprocess.CREATE_NO_WINDOW
 
     command = [xray_path, '-c', config_file_path]
     try:
         process = subprocess.Popen(
-            command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=creationflags)
 
         time.sleep(1)
 

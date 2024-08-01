@@ -16,3 +16,6 @@ config
 icon/vpn-01.ico
 icon/vpn-02.ico
 icon/vpn-03.ico
+vpn-01.png
+config copy.json
+.DS_Store
