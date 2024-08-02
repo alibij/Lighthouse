@@ -19,3 +19,5 @@ icon/vpn-03.ico
 vpn-01.png
 config copy.json
 .DS_Store
+LightHouseVPN.spec
+pfconf.conf
