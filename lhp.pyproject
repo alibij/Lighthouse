@@ -1,0 +1,11 @@
+{
+    "files": [
+        "mainwindow.py",
+        "proxies.ui",
+        "main.ui",
+        "tick.png",
+        "config.py",
+        "config.json",
+        "settings.ui"
+    ]
+}
