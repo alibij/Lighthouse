@@ -1,7 +1,7 @@
 import os
 import json
 import base64
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 
@@ -13,11 +13,12 @@ class XrayBaseSetting(BaseModel):
 
 
 class ConfigData(BaseModel):
-    last_xray_pid: Optional[int] = None
-    test_limit: Optional[int] = None
-    speed_tolerance: Optional[float] = None
-    create_file: Optional[bool] = None
-    xray_config: XrayBaseSetting = None
+    last_xray_pid: Optional[int] = 0
+    test_limit: Optional[int] = 10
+    speed_tolerance: Optional[float] = 0.9
+    create_file: Optional[bool] = False
+    xray_config: XrayBaseSetting = Field(default_factory=lambda: XrayBaseSetting(
+        http=True, socks=True, http_port=1081, socks_port=1080))
 
 
 class ConfigManager:
@@ -25,46 +26,34 @@ class ConfigManager:
         self.filename = filename
         self.encode = encode
 
+    def _load_file(self) -> dict:
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r') as f:
+                data = f.read()
+
+            if self.encode:
+                data = base64.b64decode(data).decode()
+
+            data = data.replace("'", '"')
+            return json.loads(data)
+        return {}
+
     def read(self) -> ConfigData:
-        if not os.path.exists(self.filename):
-            return ConfigData(
-                last_xray_pid=0,
-                test_limit=10,
-                speed_tolerance=0.9,
-                create_file=False,
-                xray_config=XrayBaseSetting(
-                    http=True, socks=True, http_port=1081, socks_port=1080)
-            )
-
-        with open(self.filename, 'r') as f:
-            data = f.read()
-
-        if self.encode:
-            data = base64.b64decode(data).decode()
-
-        data = data.replace("'", '"')
-        config = json.loads(data)
-
-        return ConfigData(**config)
+        config_data = self._load_file()
+        return ConfigData(**config_data) if config_data else ConfigData()
 
     def write(self, data: ConfigData):
-        current_data = self.read()
+        current_data = self._load_file()
 
-        if data.xray_config:
-            for key, value in data.xray_config.dict().items():
-                if value is not None:
-                    setattr(current_data.xray_config, key, value)
+        updated_data = {**current_data, **data.dict(exclude_unset=True)}
+        updated_data['xray_config'] = {
+            **current_data.get('xray_config', {}), **data.xray_config.dict(exclude_unset=True)}
 
-        for key, value in data.dict().items():
-            if key != 'xray_config' and value is not None:
-                setattr(current_data, key, value)
-
-        d = current_data.dict()
-        d = {key: value for key, value in d.items() if value is not None}
-        d = json.dumps(d, indent=4)
+        serialized_data = json.dumps(updated_data, indent=4)
 
         if self.encode:
-            d = base64.b64encode(d.encode()).decode()
+            serialized_data = base64.b64encode(
+                serialized_data.encode()).decode()
 
         with open(self.filename, 'w') as f:
-            f.write(d)
+            f.write(serialized_data)
