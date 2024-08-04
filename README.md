@@ -17,4 +17,4 @@ For the latest version of Xray, visit [Xray Releases](https://github.com/XTLS/Xr
 
 For the latest version of geo files, visit [GeoIP Releases](https://github.com/v2fly/geoip/releases).
 
-python -m PyInstaller --name LightHouseVPN --onefile  --add-data ./xray:. --add-data ./geoip.dat:.  --add-data ./geosite.dat:. --icon icon/vpn-01.png --windowed app2.py
+python -m PyInstaller --name LightHouseVPN --onefile --icon icon/vpn-01.png --windowed app2.py
