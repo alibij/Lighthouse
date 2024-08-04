@@ -80,8 +80,6 @@ def create_config(server_list: list, fileName='testconfig.json', startPort=10000
             startport += 1
 
     make_file(json.dumps(default_json, indent=4), fileName)
-    # with open(fileName, 'w') as json_file:
-    #     json.dump(default_json, json_file, indent=4)
 
     return {
         'startPort': startPort,

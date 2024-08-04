@@ -20,7 +20,9 @@ async def connect_to_fastest(url, config):
                    socks=config['socks']):
         start_core(config_file_path='./config.json')
 
-        ip_data = await get_ip_data(proxy=f'http://localhost:{config["http_port"]}')
+        # ip_data = await get_ip_data(proxy=f'http://localhost:{config["http_port"]}')
+        ip_data = local_ip_data(
+            proxy=f'http://localhost:{config["http_port"]}')
 
         clear()
 

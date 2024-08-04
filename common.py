@@ -1,3 +1,6 @@
+
+from IP2Location import IP2Location
+from ipaddress import IPv4Address, IPv6Address
 from aiohttp import ClientSession, ClientTimeout
 import asyncio
 import time
@@ -46,57 +49,57 @@ def print_loading_bar(current, min_val, max_val, length=80):
     sys.stdout.flush()
 
 
-async def get_ip(proxy=None, time_out=10):
-    try:
-        timeout = ClientTimeout(total=time_out)
-        testUrl = 'http://icanhazip.com/'
-        async with ClientSession(timeout=timeout) as session:
-            async with session.get(testUrl, proxy=proxy) as response:
-                if response.status == 200:
-                    return await response.text()
-    except Exception as e:
-        pass
+# async def get_ip(proxy=None, time_out=10):
+#     try:
+#         timeout = ClientTimeout(total=time_out)
+#         testUrl = 'http://icanhazip.com/'
+#         async with ClientSession(timeout=timeout) as session:
+#             async with session.get(testUrl, proxy=proxy) as response:
+#                 if response.status == 200:
+#                     return await response.text()
+#     except Exception as e:
+#         pass
 
 
-async def get_ip_data(proxy=None, time_out=10):
+# async def get_ip_data(proxy=None, time_out=10):
 
-    timeout = ClientTimeout(total=time_out)
+#     timeout = ClientTimeout(total=time_out)
 
-    ip = await get_ip(proxy)
+#     ip = get_ip(proxy)
 
-    testUrl = f'http://ip-api.com/json/{ip}'
-    try:
-        async with ClientSession(timeout=timeout) as session:
-            async with session.get(testUrl) as response:
-                if response.status == 200:
-                    data = (await response.json())
-                    data['ip'] = ip
-                    return data
-                else:
-                    return None
-    except Exception as e:
-        pass
+#     testUrl = f'http://ip-api.com/json/{ip}'
+#     try:
+#         async with ClientSession(timeout=timeout) as session:
+#             async with session.get(testUrl) as response:
+#                 if response.status == 200:
+#                     data = (await response.json())
+#                     data['ip'] = ip
+#                     return data
+#                 else:
+#                     return None
+#     except Exception as e:
+#         pass
 
-    testUrl = f'https://ipinfo.io/{ip}/json'
-    try:
-        async with ClientSession(timeout=timeout) as session:
-            async with session.get(testUrl) as response:
-                if response.status == 200:
-                    return await response.json()
-                else:
-                    return None
-    except Exception as e:
-        pass
+#     testUrl = f'https://ipinfo.io/{ip}/json'
+#     try:
+#         async with ClientSession(timeout=timeout) as session:
+#             async with session.get(testUrl) as response:
+#                 if response.status == 200:
+#                     return await response.json()
+#                 else:
+#                     return None
+#     except Exception as e:
+#         pass
 
-    testUrl = 'https://ifconfig.co/json'
-    try:
+#     testUrl = 'https://ifconfig.co/json'
+#     try:
 
-        async with ClientSession(timeout=timeout) as session:
-            async with session.get(testUrl, proxy=proxy) as response:
-                if response.status == 200:
-                    return await response.json()
-    except Exception as e:
-        pass
+#         async with ClientSession(timeout=timeout) as session:
+#             async with session.get(testUrl, proxy=proxy) as response:
+#                 if response.status == 200:
+#                     return await response.json()
+#     except Exception as e:
+#         pass
 
 
 def check_internet():
@@ -109,6 +112,38 @@ def check_internet():
     except requests.RequestException:
         return False
 
+
+def get_ip(proxy=None, time_out=10):
+    try:
+        test_url = 'http://icanhazip.com/'
+        response = requests.get(
+            test_url, proxies={'http': proxy}, timeout=time_out)
+        if response.status_code == 200:
+            return response.text.replace('\n', '')
+    except:
+        pass
+
+
+def local_ip_data(ip=None, proxy=None):
+    if not ip:
+        ip = get_ip(proxy)
+    try:
+        if str(IPv4Address(ip)) == ip:
+            db = IP2Location("./bin/ipdatav4.BIN")
+            print('V4', db.get_all(ip))
+            data = db.get_all(ip)
+    except:
+        pass
+    try:
+        if str(IPv6Address(ip)) == ip:
+            db = IP2Location("./bin/ipdatav6.BIN")
+            print("V6", db.get_all(ip))
+            data = db.get_all(ip)
+    except:
+        pass
+    return {"country_iso": data.country_short,
+            "country": data.country_long,
+            "ip": data.ip} if data else None
 
 # if __name__ == "__main__":
 #     a = asyncio.run()

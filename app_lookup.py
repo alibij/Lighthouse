@@ -39,7 +39,9 @@ class AppLookUpWorker(QThread):
                     self.update_ip_flag = False
                     __is_connect = True if self._config.last_xray_pid > 0 and \
                         chek_task(self._config.last_xray_pid) else False
-                    __ip_data = await get_ip_data(proxy=f'http://localhost:{self._config.xray_config.http_port}') if __is_connect else None
+                    # __ip_data = await get_ip_data(proxy=f'http://localhost:{self._config.xray_config.http_port}') if __is_connect else None
+                    __ip_data = local_ip_data(
+                        proxy=f'http://localhost:{self._config.xray_config.http_port}') if __is_connect else None
 
                 if self._config.last_xray_pid > 0 and \
                         chek_task(self._config.last_xray_pid) or self.test_is_run:
@@ -55,7 +57,7 @@ class AppLookUpWorker(QThread):
                     self.connect_btn_signal.emit('Connect')
                     self.update_lable_signal.emit('LightHouse is ready to use')
 
-            else:
+            elif not self.test_is_run:
                 self.update_lable_signal.emit(
                     "LightHouse\ndon't have access to internet")
                 self.connect_btn_signal.emit('-')
