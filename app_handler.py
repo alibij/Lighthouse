@@ -72,12 +72,13 @@ class MainWindow(QMainWindow):
             self.app_look_up_worker.start()
 
     def handle_connect(self):
-        if self.connect_btn.text() == 'Connect':
-            self.connect_btn.setText('Disconnect')
-            self.xray_tester_connect()
-        else:
-            self.connect_btn.setText('Connect')
-            self.disconnect_vpn()
+        if check_internet():
+            if self.connect_btn.text() == 'Connect':
+                self.connect_btn.setText('Disconnect')
+                self.xray_tester_connect()
+            else:
+                self.connect_btn.setText('Connect')
+                self.disconnect_vpn()
 
     def xray_tester_connect(self):
         if not self. xray_tester_worker.isRunning():

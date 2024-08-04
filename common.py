@@ -5,6 +5,7 @@ import sys
 import os
 import base64
 import json
+import requests
 
 
 async def removeRemark(url, num):
@@ -97,5 +98,18 @@ async def get_ip_data(proxy=None, time_out=10):
     except Exception as e:
         pass
 
-if __name__ == "__main__":
-    asyncio.run(get_ip_data())
+
+def check_internet():
+    url = "https://www.google.com/generate_204"
+    timeout = 5
+
+    try:
+        response = requests.get(url, timeout=timeout)
+        return True if response.status_code == 204 else False
+    except requests.RequestException:
+        return False
+
+
+# if __name__ == "__main__":
+#     a = asyncio.run()
+#     print(a)

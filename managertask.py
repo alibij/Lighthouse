@@ -12,7 +12,6 @@ import time
 def start_core(xray_path='./xray', config_file_path='./config.json'):
     system = platform.system()
     creationflags = 0
-    # creationflags = subprocess.CREATE_NO_WINDOW
 
     if system == 'Windows':
         xray_path = xray_path + '.exe'
