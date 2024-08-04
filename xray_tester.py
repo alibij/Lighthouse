@@ -39,8 +39,8 @@ class XrayTesterWorker(QThread):
         self.signals.label_signal.emit('Getting the latest servers')
 
         file = create_config(fetch_and_decode_data(
-            'https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/sub/sub_merge.txt',
-            False
+            # 'https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/sub/sub_merge.txt',
+            # False
         ))
         self._task = start_core(config_file_path='./testconfig.json')
 
