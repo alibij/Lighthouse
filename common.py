@@ -130,14 +130,12 @@ def local_ip_data(ip=None, proxy=None):
     try:
         if str(IPv4Address(ip)) == ip:
             db = IP2Location("./bin/ipdatav4.BIN")
-            print('V4', db.get_all(ip))
             data = db.get_all(ip)
     except:
         pass
     try:
         if str(IPv6Address(ip)) == ip:
             db = IP2Location("./bin/ipdatav6.BIN")
-            print("V6", db.get_all(ip))
             data = db.get_all(ip)
     except:
         pass
