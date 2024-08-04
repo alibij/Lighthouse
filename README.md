@@ -30,7 +30,7 @@ This Python project is designed to test VPN services using Xray, a powerful tool
 3. **Build the Application** (Optional):
     If you want to build a standalone executable:
     ```bash
-    python -m PyInstaller --name LightHouseVPN --onefile --icon icon/vpn-01.png --windowed app2.py
+    python -m PyInstaller --name LightHouseVPN --onefile --icon icon/vpn-01.png --windowed app_handler.py
     ```
 
 ## Usage
