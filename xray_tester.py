@@ -1,14 +1,12 @@
-import sys
 import asyncio
 from PyQt5.QtCore import QThread, pyqtSignal, QObject, pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QProgressBar, QWidget
 
 # Placeholder imports
 from config import ConfigManager, ConfigData
 from managertask import start_core, stop_task, chek_task
 from createConfig import fetch_and_decode_data, create_config, main_config
 from speedtest import speedTest
-from getPing import testPing
+from getData import testPing, ip_data_list
 import createServerFile
 from common import *
 
@@ -35,7 +33,7 @@ class XrayTesterWorker(QThread):
             self.signals.update_ip_signal.emit()
             return self._task
 
-    async def async_run(self, xray_config, test_limit, speed_tolerance, create_file):
+    async def async_run(self, xray_config, test_limit, speed_tolerance, create_file, location_filter='dk'):
         self.signals.label_signal.emit('Getting the latest servers')
 
         file = create_config(fetch_and_decode_data(
@@ -65,12 +63,23 @@ class XrayTesterWorker(QThread):
 
         activeServer = [proxies[i] for i in proxies if proxies[i]['ping'] > 0]
         activeServer.sort(key=lambda x: x['ping'])
+        activeServer = await ip_data_list(activeServer)
+
+        filterd_servers = []
+        if location_filter:
+            for s in activeServer:
+                if s['country_iso'] == location_filter.upper():
+                    filterd_servers.append(s)
+
+        useServer = filterd_servers if len(
+            filterd_servers) > 0 else activeServer
 
         highest_server = {}
         speed = 0.00
         net_speed = await speedTest()
 
-        for i, server in enumerate(activeServer):
+        for i, server in enumerate(useServer):
+
             if self._stop_event.is_set():
                 self.signals.label_signal.emit('Waiting for ...')
                 self.signals.progress_signal.emit(0)

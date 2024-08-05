@@ -7,7 +7,7 @@ import asyncio
 from common import *
 from createConfig import fetch_and_decode_data, create_config, main_config
 from managertask import start_core, stop_task, find_xray_pid
-from getPing import testPing
+from getData import testPing
 
 
 async def connect_to_fastest(url, config):
