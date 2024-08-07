@@ -34,8 +34,8 @@ class XrayTesterWorker(QThread):
             self.signals.update_ip_signal.emit()
             return self._task
 
-    async def async_run(self, xray_config, test_limit, speed_tolerance, create_file, location_filter='dk'):
-        self.signals.label_signal.emit('Getting the latest servers')
+    async def async_run(self, xray_config, test_limit, speed_tolerance, create_file, location_filter):
+        self.signals.label_signal.emit('1/5\n\nGetting the latest servers')
 
         file = create_config(fetch_and_decode_data(
             # 'https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/sub/sub_merge.txt',
@@ -44,7 +44,7 @@ class XrayTesterWorker(QThread):
         self._task = start_core(config_file_path='./testconfig.json')
 
         self.signals.label_signal.emit(
-            'Getting the best server suitable for your internet')
+            '2/5\n\nGetting the best server suitable for your internet')
 
         servers = await testPing(
             proxies=[f'http://localhost:{i}' for i in range(
@@ -62,12 +62,17 @@ class XrayTesterWorker(QThread):
             for i, ping in enumerate(servers)
         }
 
+        self.signals.label_signal.emit(
+            '3/5\n\nSorting servers for you')
+
         activeServer = [proxies[i] for i in proxies if proxies[i]['ping'] > 0]
         activeServer.sort(key=lambda x: x['ping'])
         activeServer = await ip_data_list(activeServer)
 
         filterd_servers = []
-        if location_filter:
+        if location_filter != "auto":
+            self.signals.label_signal.emit(
+                f'4/5\n\nFind a server in {isoCountrys[location_filter.upper()]}')
             for s in activeServer:
                 if s['country_iso'] == location_filter.upper():
                     filterd_servers.append(s)
@@ -96,7 +101,7 @@ class XrayTesterWorker(QThread):
             highest_server = server if 'downloadSpeed' not in highest_server or server[
                 'downloadSpeed'] > highest_server['downloadSpeed'] else highest_server
 
-            t = f'Current Speed is : {net_speed} MB/s'
+            t = f'5/5\n\nCurrent Speed is : {net_speed} MB/s'
             t += f'\nhighest server speed is {highest_server["downloadSpeed"]} MB/s'
             t += f'\ncurrent server speed is {speed} MB/s'
 
@@ -118,6 +123,7 @@ class XrayTesterWorker(QThread):
 
     def run(self):
         self.signals.test_is_runing.emit(True)
+        conf = config.read()
         asyncio.run(self.async_run(
             xray_config=conf.xray_config.dict(),
             test_limit=conf.test_limit,
