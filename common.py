@@ -127,6 +127,7 @@ def get_ip(proxy=None, time_out=10):
 def local_ip_data(ip=None, proxy=None):
     if not ip:
         ip = get_ip(proxy)
+
     try:
         if str(IPv4Address(ip)) == ip:
             db = IP2Location("./bin/ipdatav4.BIN")
@@ -139,9 +140,9 @@ def local_ip_data(ip=None, proxy=None):
             data = db.get_all(ip)
     except:
         pass
-    return {"country_iso": data.country_short,
-            "country": data.country_long,
-            "ip": data.ip} if data else None
+    return {"country_iso": data.country_short if ip else '-',
+            "country": data.country_long if ip else '-',
+            "ip": data.ip if ip else '-'}
 
 # if __name__ == "__main__":
 #     a = asyncio.run()
