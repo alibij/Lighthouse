@@ -1,3 +1,4 @@
+from iso3166_country import country_iso_a2 as isoCountrys
 import asyncio
 from PyQt5.QtCore import QThread, pyqtSignal, QObject, pyqtSlot
 
@@ -118,10 +119,11 @@ class XrayTesterWorker(QThread):
     def run(self):
         self.signals.test_is_runing.emit(True)
         asyncio.run(self.async_run(
-            xray_config=config.read().xray_config.dict(),
-            test_limit=config.read().test_limit,
-            speed_tolerance=config.read().speed_tolerance,
-            create_file=config.read().create_file))
+            xray_config=conf.xray_config.dict(),
+            test_limit=conf.test_limit,
+            location_filter=conf.location,
+            speed_tolerance=conf.speed_tolerance,
+            create_file=conf.create_file))
 
     def stop_worker(self):
         self.signals.test_is_runing.emit(False)

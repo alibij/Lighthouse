@@ -16,6 +16,7 @@ class ConfigData(BaseModel):
     last_xray_pid: Optional[int] = 0
     test_limit: Optional[int] = 10
     speed_tolerance: Optional[float] = 0.9
+    location: Optional[str] = "auto"
     create_file: Optional[bool] = False
     xray_config: XrayBaseSetting = Field(default_factory=lambda: XrayBaseSetting(
         http=True, socks=True, http_port=1081, socks_port=1080))
@@ -44,7 +45,6 @@ class ConfigManager:
 
     def write(self, data: ConfigData):
         current_data = self._load_file()
-
         updated_data = {**current_data, **data.dict(exclude_unset=True)}
         updated_data['xray_config'] = {
             **current_data.get('xray_config', {}), **data.xray_config.dict(exclude_unset=True)}
