@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
         self.label.setAlignment(Qt.AlignLeft | Qt.AlignCenter)
 
         self.progress_bar = QProgressBar()
+        self.progress_bar.setValue(0)
 
         self.connect_btn = QPushButton()
         self.connect_btn.clicked.connect(self.handle_connect)
