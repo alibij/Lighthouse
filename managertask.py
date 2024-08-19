@@ -7,9 +7,11 @@ import time
 import platform
 import subprocess
 import time
+from config import FileLocation
 
 
-def start_core(xray_path='./bin/xray', config_file_path='./config.json'):
+def start_core(xray_path=FileLocation.xray, config_file_path='./config.json'):
+
     system = platform.system()
     creationflags = 0
 

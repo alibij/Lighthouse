@@ -5,6 +5,14 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 
+class FileLocation:
+    geoip: str = './bin/geoip.dat'
+    geosite: str = './bin/geosite.dat'
+    ipdatav4: str = './bin/ipdatav4.BIN'
+    ipdatav6: str = './bin/ipdatav6.BIN'
+    xray: str = './bin/xray'
+
+
 class XrayBaseSetting(BaseModel):
     http: Optional[bool] = None
     socks: Optional[bool] = None

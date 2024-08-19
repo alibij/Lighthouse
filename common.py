@@ -9,6 +9,7 @@ import os
 import base64
 import json
 import requests
+from config import FileLocation
 
 
 async def removeRemark(url, num):
@@ -130,13 +131,13 @@ def local_ip_data(ip=None, proxy=None):
 
     try:
         if str(IPv4Address(ip)) == ip:
-            db = IP2Location("./bin/ipdatav4.BIN")
+            db = IP2Location(FileLocation.ipdatav4)
             data = db.get_all(ip)
     except:
         pass
     try:
         if str(IPv6Address(ip)) == ip:
-            db = IP2Location("./bin/ipdatav6.BIN")
+            db = IP2Location(FileLocation.ipdatav6)
             data = db.get_all(ip)
     except:
         pass
