@@ -66,6 +66,15 @@ class XrayTesterWorker(QThread):
             '3/5\n\nSorting servers for you')
 
         activeServer = [proxies[i] for i in proxies if proxies[i]['ping'] > 0]
+        activeServer = []
+        if len(activeServer) == 0:
+            self.signals.label_signal.emit(
+                "Error :/ \n\nLight House can't find server")
+            stop_task(self._task['pid'])
+            self.signals.progress_signal.emit(0)
+            self.signals.test_is_runing.emit(False)
+            return
+
         activeServer.sort(key=lambda x: x['ping'])
         activeServer = await ip_data_list(activeServer)
 
