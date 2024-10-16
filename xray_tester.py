@@ -65,8 +65,9 @@ class XrayTesterWorker(QThread):
         self.signals.label_signal.emit(
             '3/5\n\nSorting servers for you')
 
-        activeServer = [proxies[i] for i in proxies if proxies[i]['ping'] > 0]
         activeServer = []
+        activeServer = [proxies[i] for i in proxies if proxies[i]['ping'] > 0]
+
         if len(activeServer) == 0:
             self.signals.label_signal.emit(
                 "Error :/ \n\nLight House can't find server")
