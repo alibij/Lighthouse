@@ -8,6 +8,7 @@ from common import *
 from createConfig import fetch_and_decode_data, create_config, main_config
 from managertask import start_core, stop_task, find_xray_pid
 from getData import testPing
+from url2json import generateConfig
 
 
 async def connect_to_fastest(url, config):
@@ -54,13 +55,18 @@ async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file
             activeServer.append(proxies[i])
 
     activeServer = sorted(activeServer, key=lambda x: x['ping'])
+    # print(activeServer)
     highestserver = {}
     speed = 0.00
-    netspeed = await speedTest()
+    # netspeed = await speedTest()
+    # print(netspeed)
     for i, server in enumerate(activeServer):
 
-        if i == test_limit or speed >= (netspeed*speedtelorance):
+        if i == test_limit:
             break
+
+        # if speed >= (netspeed*speedtelorance):
+        #     break
 
         activeServer[i]['downloadSpeed'] = await speedTest(proxy=server['proxyUrl'])
         speed = activeServer[i]['downloadSpeed']
@@ -71,7 +77,7 @@ async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file
             highestserver = server if server['downloadSpeed'] > highestserver['downloadSpeed'] else highestserver
 
         clear()
-        print(f'Current Speed is : {netspeed} MB/s')
+        # print(f'Current Speed is : {netspeed} MB/s')
         print(f'highest server speed is {highestserver["downloadSpeed"]} MB/s')
         print(f'current server speed is {speed} MB/s')
 
@@ -81,9 +87,11 @@ async def main(xray_config: dict, test_limit=10, speedtelorance=0.9, create_file
         print_loading_bar(i+1, 0, serverlen)
 
     stop_task(task['pid'])
-
-    await connect_to_fastest(highestserver['connectionUrl'], xray_config)
+    # await connect_to_fastest(highestserver['connectionUrl'], xray_config)
     if create_file:
+        s = generateConfig(highestserver['connectionUrl'])
+        with open("./fast.json", 'w') as f:
+            json.dump(s, f, indent=4)
         createServerFile.server_list_file(activeServer)
 
 if __name__ == "__main__":
