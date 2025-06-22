@@ -5,9 +5,14 @@ from url2json import generateConfig
 from common import make_file
 
 
-def fetch_and_decode_data(url="https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/Eternity", is_base64=True):
+def fetch_and_decode_data(url: str, proxy: str = None, is_base64=True):
+    if proxy:
+        proxy = {
+            'http': proxy,
+            'https': proxy
+        }
     try:
-        response = requests.get(url)
+        response = requests.get(url, proxies=proxy, timeout=10)
         if response.status_code == 200:
             decoded_data = base64.b64decode(
                 response.content) if is_base64 else response.content
