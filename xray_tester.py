@@ -38,6 +38,7 @@ class XrayTesterWorker(QThread):
         self.signals.label_signal.emit('1/5\n\nGetting the latest servers')
 
         file = create_config(fetch_and_decode_data(
+            "https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/Eternity"
             # 'https://raw.githubusercontent.com/mahdibland/ShadowsocksAggregator/master/sub/sub_merge.txt',
             # False
         ))
