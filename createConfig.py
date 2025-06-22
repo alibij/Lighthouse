@@ -22,6 +22,25 @@ def fetch_and_decode_data(url: str, proxy: str = None, is_base64=True):
                 f"Failed to fetch data from {url}. Status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data from {url}: {e}")
+        return None
+
+
+def read_local_file(file_name, is_base64=True, skip: int = None, limit: int = None):
+    new = []
+    with open(file_name, 'r') as f:
+        server_list = f.readlines()
+
+    if is_base64:
+        print("injaaaaaaaaa")
+        server_list = base64.b64decode(server_list[0]).decode(
+            'utf-8').strip().split('\n')
+        print(server_list)
+    # skip = skip if skip else 0
+    # limit = limit if limit else len(server_list)
+
+    # for s in range(skip, limit):
+    #     new.append(server_list[s].replace("\n", ""))
+    return server_list
 
 
 def create_config(server_list: list, fileName='testconfig.json', startPort=10000):
